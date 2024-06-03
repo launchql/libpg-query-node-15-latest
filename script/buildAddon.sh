@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
+# this file is auto-generated, use "yarn build:generate <env>" to rebuild with an env (e.g., pg-15)
 
-# Set the desired commit hash and branch
-commit=db39825bc7c1ddd45962ec6a626d740b7f8f027a
-branch=15-latest
+LIBPG_REPO=https://github.com/pganalyze/libpg_query.git
+LIBPG_COMMIT=db39825bc7c1ddd45962ec6a626d740b7f8f027a
+LIBPG_BRANCH=15-latest
+
+# Check if variables are set and exit if not
+if [ -z "$LIBPG_COMMIT" ]; then
+    echo "ERROR: LIBPG_COMMIT variable is not set."
+    exit 1
+fi
+
+if [ -z "$LIBPG_BRANCH" ]; then
+    echo "ERROR: LIBPG_BRANCH variable is not set."
+    exit 1
+fi
+
+if [ -z "$LIBPG_REPO" ]; then
+    echo "ERROR: LIBPG_REPO variable is not set."
+    exit 1
+fi
 
 # Remember current directory and create a new, unique, temporary directory
 rDIR=$(pwd)
@@ -15,11 +32,11 @@ makeTarget=build
 cd "$tmpDir"
 
 # Clone the selected branch of the libpg_query Git repo
-git clone -b $branch --single-branch https://github.com/pganalyze/libpg_query.git
+git clone -b $LIBPG_BRANCH --single-branch $LIBPG_REPO
 cd libpg_query
 
 # Checkout the desired commit
-git checkout $commit
+git checkout $LIBPG_COMMIT
 
 # needed if being invoked from within gyp
 unset MAKEFLAGS
@@ -61,6 +78,7 @@ fi
 
 # Copy header
 cp $(pwd)/pg_query.h $rDIR/libpg_query/include/
+cp $(pwd)/protobuf/*.proto $rDIR/libpg_query/protobuf/
 
 # Cleanup: revert to original directory and remove the temp
 cd "$rDIR"

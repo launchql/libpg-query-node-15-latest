@@ -1,7 +1,30 @@
+:: this file is auto-generated, use "yarn build:generate <env>" to rebuild with an env (e.g., pg-15)
 @echo off
 
-set commit=db39825bc7c1ddd45962ec6a626d740b7f8f027a
-set branch=15-latest
+set LIBPG_REPO=https://github.com/pganalyze/libpg_query.git
+set LIBPG_COMMIT=db39825bc7c1ddd45962ec6a626d740b7f8f027a
+set LIBPG_BRANCH=15-latest
+
+:: Check if each required variable is set
+if "%LIBPG_REPO%"=="" (
+    echo ERROR: LIBPG_REPO variable is not set.
+    exit /B 1
+)
+
+if "%LIBPG_COMMIT%"=="" (
+    echo ERROR: LIBPG_COMMIT variable is not set.
+    exit /B 1
+)
+
+if "%LIBPG_BRANCH%"=="" (
+    echo ERROR: LIBPG_BRANCH variable is not set.
+    exit /B 1
+)
+
+:: The environment variables must be set
+echo Using repository: %LIBPG_REPO%
+echo Using commit: %LIBPG_COMMIT%
+echo Using branch: %LIBPG_BRANCH%
 
 setlocal enabledelayedexpansion
 
@@ -21,11 +44,11 @@ cd /D %tmpDir%
 
 
 rem Clone the selected branch of the libpg_query Git repo
-git clone -b %branch% --single-branch https://github.com/pganalyze/libpg_query.git
+git clone -b %LIBPG_BRANCH% --single-branch %LIBPG_REPO%
 cd libpg_query
 
 rem Checkout the desired commit
-git checkout %commit%
+git checkout %LIBPG_COMMIT%
 
 rem needed if being invoked from within gyp
 set MAKEFLAGS=
